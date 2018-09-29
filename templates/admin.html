@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script type="application/javascript" src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+</head>
+<body>
+<br>
+<div class="buy">
+    <span>师生信息系统
+        {% if INFO_SERVICE %}
+            <a>{{ info_days }} 天后到期</a>
+        {% else: %}
+            <a href="#" onclick="buy_info_service()" class="btn btn-link">已到期, 点击续订</a>
+            {#            <a href="#" class="alert-link" onclick="buy_info_service()">已到期，点击续订</a>#}
+        {% endif %}
+    </span>&emsp;&emsp;&emsp;
+    <span>成绩管理系统
+        {% if SCORE_SERVICE %}
+            <a>{{ score_days }} 天后到期</a>
+        {% else %}
+            <a href="#" onclick="buy_score_service()" class="btn btn-link">购买 $30K</a>
+        {% endif %}
+    </span>&emsp;&emsp;&emsp;
+    <span>选课系统
+        {% if COURSE_SERVICE %}
+            <a>{{ course_days }} 天后到期</a>
+        {% else %}
+            <a href="#" onclick="buy_course_service()" class="btn btn-link">购买 $35K</a>
+        {% endif %}
+    </span>
+</div>
+
+{% if INFO_SERVICE %}
+    <br>
+    <h2>信息管理</h2>
+    <div class="header">
+        <div class="header_right">
+            <form action="/add_teacher_student/" method="post">
+                <input type="text" id="admin_add_id" name="id" placeholder="工号/学号">
+                <input type="text" id="admin_add_name" name="name" placeholder="姓名">
+                <input type="text" id="admin_add_mail" name="mail" placeholder="邮箱">
+                <input type="text" id="admin_add_phone" name="phone" placeholder="手机号">
+                <input type="text" id="admin_add_password" name="password" placeholder="登陆密码">
+                <select id="admin_add_privilege" name="privilege">
+                    <option value="true">不限制</option>
+                    <option value="false">限制</option>
+                </select>
+                <select id="admin_add_who" name="who">
+                    <option value="teacher">老师</option>
+                    <option value="student">学生</option>
+                </select>
+                <input type="submit" id="admin_add" value="添加">
+            </form>
+        </div>
+        <br>
+        <div class="header_left">
+            <form action="/admin/query/" method="POST">
+                <input type="text" name="id" placeholder="工号/学号查询">
+                <input type="text" name="name" placeholder="姓名查询">
+                <input type="text" name="mail" placeholder="邮箱查询">
+                <input type="submit" value="查询">
+            </form>
+        </div>
+        {% if admin_query_result %}
+            <h3>查询结果</h3>
+            <div class="teacher_table_div">
+                <table class="teacher_table" id="admin_queried">
+                    <thead>
+                    <tr>
+                        <th scope="col">工号/学号</th>
+                        <th scope="col">邮箱</th>
+                        <th scope="col">姓名</th>
+                        <th scope="col">手机号</th>
+                        <th scope="col">密码</th>
+                        <th scope="col">权限</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, value in admin_query_result.items() %}
+                        <tr>
+                            <th>{{ key }}</th>
+                            <td><input class="{{ value[0] }}" value="{{ value[0] }}"></td>
+                            <td><input class="{{ value[0] }}" value="{{ value[1] }}"></td>
+                            <td><input class="{{ value[0] }}" value="{{ value[2] }}"></td>
+                            <td><input class="{{ value[0] }}" value="{{ value[3] }}"></td>
+                            {% if value[4] == 'true' %}
+                                <td><select class="{{ value[0] }}">
+                                    <option value="true">不限制</option>
+                                    <option value="false">限制</option>
+                                </select></td>
+                            {% elif value[4] == 'false' %}
+                                <td><select class="{{ value[0] }}">
+                                    <option value="true">限制</option>
+                                    <option value="false">不限制</option>
+                                </select></td>
+                            {% endif %}
+                            <td><input id="value[0]" type="button" onclick='submit_change("{{ value[0] }}", 0)'
+                                       value="提交"></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+
+    <div class="container">
+        <h3>教师信息：</h3>
+        <div class="teacher_table_div">
+            <table class="teacher_table">
+                <thead>
+                <tr>
+                    <th scope="col">工号</th>
+                    <th scope="col">邮箱</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">手机号</th>
+                    <th scope="col">密码</th>
+                    <th scope="col">权限</th>
+                    <th scope="col">提交</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in teacher_result.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td><input class="{{ value[0] }}" value="{{ value[0] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[1] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[2] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[3] }}"></td>
+                        {% if value[4] == 'true' %}
+                            <td><select class="{{ value[0] }}">
+                                <option value="true">不限制</option>
+                                <option value="false">限制</option>
+                            </select></td>
+                        {% elif value[4] == 'false' %}
+                            <td><select class="{{ value[0] }}">
+                                <option value="true">限制</option>
+                                <option value="false">不限制</option>
+                            </select></td>
+                        {% endif %}
+                        <td><input type="button" onclick='submit_change("{{ value[0] }}", 1)' value="提交"></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <h3>学生信息：</h3>
+        <div id="student_table_div">
+            <table class="student_table">
+                <thead>
+                <tr>
+                    <th scope="col">学号</th>
+                    <th scope="col">邮箱</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">手机号</th>
+                    <th scope="col">密码</th>
+                    <th scope="col">权限</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in student_result.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td><input class="{{ value[0] }}" value="{{ value[0] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[1] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[2] }}"></td>
+                        <td><input class="{{ value[0] }}" value="{{ value[3] }}"></td>
+                        {% if value[4] == 'true' %}
+                            <td><select class="{{ value[0] }}">
+                                <option value="true">不限制</option>
+                                <option value="false">限制</option>
+                            </select></td>
+                        {% elif value[4] == 'false' %}
+                            <td><select class="{{ value[0] }}">
+                                <option value="true">限制</option>
+                                <option value="false">不限制</option>
+                            </select></td>
+                        {% endif %}
+                        <td><input type="button" onclick='submit_change("{{ value[0] }}", 2)' value="提交"></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

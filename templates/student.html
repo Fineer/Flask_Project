@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script type="application/javascript" src="{{ url_for('static', filename='js/student.js') }}"></script>
+</head>
+<body>
+
+{% if COURSE_SERVICE %}
+    <div style="float: right">
+        <form action="/course_sys/" method="get">
+            <input type="submit" value="选课系统">
+        </form>
+    </div>
+{% endif %}
+
+
+<div class="container">
+    {% if INFO_SERVICE %}
+        <h2>我的个人信息：</h2>
+        <div>
+            <table class="student_my_table">
+                <thead>
+                <tr>
+                    <th scope="col">学号</th>
+                    <th scope="col">邮箱</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">手机号</th>
+                    <th scope="col">密码</th>
+                    <th scope="col">更改</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in student_self.items() %}
+                    <tr>
+                        <th class="{{ key }}">{{ key }}</th>
+                        <td class="{{ key }}">{{ value[0] }}</td>
+                        <td class="{{ key }}">{{ value[1] }}</td>
+                        <td class="{{ key }}"><input id="my_phone" value="{{ value[2] }}"></td>
+                        <td class="{{ key }}"><input id="my_pwd" value="{{ value[3] }}"></td>
+                        <td class="{{ key }}"><input onclick="modify_my_infos()" type="button" value="更改"></td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    {% if COURSE_SERVICE %}
+        <h2>我的已选课程：</h2>
+        <div>
+            <table class="student_course_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">教室</th>
+                    <th scope="col">上课时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in student_course %}
+                    <tr>
+                        <th class="{{ value[0] }}">{{ value[0] }}</th>
+                        <td class="{{ value[0] }}">{{ value[1] }}</td>
+                        <td class="{{ value[0] }}">{{ value[2] }}</td>
+                        <td class="{{ value[0] }}">{{ value[3] }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% endif %}
+    {% if SCORE_SERVICE %}
+        <h2>我的课程成绩：</h2>
+        <div>
+            <table class="student_score_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">分数</th>
+                    <th scope="col">等级</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in student_scores %}
+                    <tr>
+                        <th class="{{ value[0] }}">{{ value[0] }}</th>
+                        <td class="{{ value[0] }}">{{ value[1] }}</td>
+                        <td class="{{ value[0] }}">{{ value[2] }}</td>
+                        <td class="{{ value[0] }}">{{ value[3] }}</td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+    <script type="application/javascript" src="{{ url_for('static', filename='js/teacher.js') }}"></script>
+</head>
+<body>
+
+<div class="container">
+    {% if INFO_SERVICE %}
+        <h2>我的个人信息：</h2>
+        <div>
+            <table>
+                <thead>
+                <tr>
+                    <th scope="col">工号</th>
+                    <th scope="col">邮箱</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">手机号</th>
+                    <th scope="col">密码</th>
+                    <th scope="col">更改</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in teacher_self.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td>{{ value[0] }}</td>
+                        <td>{{ value[1] }}</td>
+                        <td><input id="my_phone_t" value="{{ value[2] }}"></td>
+                        <td><input id="my_pwd_t" value="{{ value[3] }}"></td>
+                        <td><input type="button" onclick="modify_my_pp()" value="更改"></td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        您的服务已到期，请联系管理员购买。
+    {% endif %}
+
+    {% if COURSE_SERVICE %}
+        <h2>发布课程：</h2>
+        <div>
+            <form action="/add_course/" method="post">
+                <input type="text" name="course_id" placeholder="课程号">
+                <input type="text" name="course_name" placeholder="课程名">
+                <input type="text" name="course_time" placeholder="上课时间">
+                <input type="text" name="classroom" placeholder="上课教室">
+                <input type="submit" value="提交">
+                <br><br>
+                <textarea name="course_intro" placeholder="课程简介" rows="1" cols="105" wrap="soft"></textarea>
+
+            </form>
+        </div>
+
+        <h2>我发布的课程：</h2>
+        <div>
+            <table class="teacher_course_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">教室</th>
+                    <th scope="col">上课时间</th>
+                    <th scope="col">课程介绍</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in teacher_course %}
+                    <tr>
+                        <th>{{ value[0] }}</th>
+                        <td>{{ value[1] }}</td>
+                        <td>{{ value[2] }}</td>
+                        <td>{{ value[3] }}</td>
+                        <td>
+                            <textarea rows="1" cols="60" readonly="readonly" wrap="soft">{{ value[4] }}</textarea>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h3>本学期选课学生：</h3>
+        <div>
+            <table class="course_student_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">学生列表</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in course_student.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td>
+                            <textarea rows="1" cols="60" readonly="readonly" wrap="soft">{{ value }}</textarea>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if SCORE_SERVICE %}
+        <h2>学生成绩</h2>
+        <div>
+            <h3>学生成绩登载</h3>
+            <form action="/upload_stu_score/" method="post">
+                <input type="text" placeholder="学号" name="sid">
+                <input type="text" placeholder="课程号" name="cid">
+                <input type="text" placeholder="分数" name="score">
+                <select name="level">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="P">P</option>
+                </select>
+                <input type="submit" value="提交">
+            </form>
+        </div>
+        <div>
+            <h3>学生成绩查询</h3>
+            <form action="/query_stu_score/" method="post">
+                <input type="text" placeholder="学号" name="sid">
+                <input type="text" placeholder="学生姓名" name="sname">
+                <input type="text" placeholder="课程号" name="cid">
+                <input type="text" placeholder="课程名" name="cname">
+                <input type="submit" value="查询">
+            </form>
+            {% if query_course_student_score %}
+                <div>
+                    <table>
+                        <thead>
+                        <tr>
+                            <th scope="col">课程号</th>
+                            <th scope="col">课程名</th>
+                            <th scope="col">学号</th>
+                            <th scope="col">姓名</th>
+                            <th scope="col">分数</th>
+                            <th scope="col">等级</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for key, value in query_course_student_score.items() %}
+                            {% for key1, value1 in value.items() %}
+                                <tr>
+                                    <th>{{ key[0] }}</th>
+                                    <td>{{ key[1] }}</td>
+                                    <td>{{ key1 }}</td>
+                                    <td>{{ value1[0] }}</td>
+                                    <td>{{ value1[1] }}</td>
+                                    <td>{{ value1[2] }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+        <div>
+            <table class="student_score_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">学号</th>
+                    <th scope="col">姓名</th>
+                    <th scope="col">分数</th>
+                    <th scope="col">等级</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in course_student_score.items() %}
+                    {% for key1, value1 in value.items() %}
+                        <tr>
+                            <th>{{ key[0] }}</th>
+                            <td>{{ key[1] }}</td>
+                            <td>{{ key1 }}</td>
+                            <td>{{ value1[0] }}</td>
+                            <td>{{ value1[1] }}</td>
+                            <td>{{ value1[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

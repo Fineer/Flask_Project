@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Score</title>
+
+    <script type="application/javascript" src="{{ url_for('static', filename='js/course_sys.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.2.1.min.js') }}"></script>
+</head>
+<body>
+<h2>我的课程</h2>
+{% if my_courses_result %}
+    <div class="my_courses">
+        <div class="my_courses_table_div">
+            <table class="my_courses_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">开课教师</th>
+                    <th scope="col">课程时间</th>
+                    <th scope="col">上课地点</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for value in my_courses_result %}
+                    <tr>
+                        <th id="{{ value[0] }}">{{ value[0] }}</th>
+                        <td>{{ value[1] }}</td>
+                        <td>{{ value[2] }}</td>
+                        <td>{{ value[3] }}</td>
+                        <td>{{ value[4] }}</td>
+                        <td><a href="#" id="withdraw_{{ value[0] }}"
+                               onclick='withdraw_course("{{ value[0] }}")'>退选</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endif %}
+
+<h2>课程查询</h2>
+<div class="query_course_div">
+    <form action="/csys_query/" method="post">
+        <input type="text" name="cid" placeholder="课程号">
+        <input type="text" name="cname" placeholder="课程名">
+        <input type="text" name="cteacher" placeholder="开课教师">
+        <input type="text" name="ctime" placeholder="课程时间">
+        <input type="text" name="cplace" placeholder="课程地点">
+        <input type="submit" value="查询">
+    </form>
+    {% if query_courses_result %}
+        <div id="query_course_table_div">
+            <table class="query_course_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">开课教师</th>
+                    <th scope="col">课程时间</th>
+                    <th scope="col">课程地点</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in query_courses_result.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td>{{ value[0] }}</td>
+                        <td>{{ value[1] }}</td>
+                        <td>{{ value[2] }}</td>
+                        <td>{{ value[3] }}</td>
+                        <td><a href="#" id="qnc_{{ key }}" onclick='choose_course("{{ key }}")'>选课</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+</div>
+
+<h2>所有课程</h2>
+{% if courses_result %}
+    <div class="container">
+        <div class="courses_table_div">
+            <table class="courses_table">
+                <thead>
+                <tr>
+                    <th scope="col">课程号</th>
+                    <th scope="col">课程名</th>
+                    <th scope="col">开课教师</th>
+                    <th scope="col">课程时间</th>
+                    <th scope="col">课程地点</th>
+                    <th scope="col">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for key, value in courses_result.items() %}
+                    <tr>
+                        <th>{{ key }}</th>
+                        <td>{{ value[0] }}</td>
+                        <td>{{ value[1] }}</td>
+                        <td>{{ value[2] }}</td>
+                        <td>{{ value[3] }}</td>
+                        <td><a href="#" id="c_{{ value[0] }}" onclick='choose_course("{{ key }}")'>选课</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endif %}
+
+<div></div>
+</body>
+</html>
